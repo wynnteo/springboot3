@@ -1,18 +1,13 @@
 package com.cloudfullstack.product.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
-import org.mapstruct.Builder;
 
-// DTO for creating new products
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
