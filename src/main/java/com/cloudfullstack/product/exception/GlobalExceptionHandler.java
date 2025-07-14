@@ -1,6 +1,8 @@
 package com.cloudfullstack.product.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -8,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
@@ -59,6 +62,25 @@ public class GlobalExceptionHandler {
         List<String> errors = ex.getBindingResult().getFieldErrors()
             .stream()
             .map(FieldError::getDefaultMessage)
+            .collect(Collectors.toList());
+
+        ErrorResponse error = new ErrorResponse(
+            "VALIDATION_ERROR",
+            "Invalid input data",
+            errors,
+            request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse>  handleConstraintViolationException(ConstraintViolationException ex,  HttpServletRequest request) {
+        logger.error("Validation error: {}", ex.getMessage());
+
+        List<String> errors = ex.getConstraintViolations()
+            .stream()
+            .map(violation -> violation.getMessage())
             .collect(Collectors.toList());
 
         ErrorResponse error = new ErrorResponse(

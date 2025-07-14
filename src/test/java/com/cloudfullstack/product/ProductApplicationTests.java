@@ -62,15 +62,12 @@ class ProductServiceTest {
     
     @Test
     void createProduct_ShouldReturnProductResponse() {
-        // Given
         when(productMapper.toEntity(any(CreateProductRequest.class))).thenReturn(testProduct);
         when(productRepository.save(any(Product.class))).thenReturn(testProduct);
         when(productMapper.toResponse(any(Product.class))).thenReturn(productResponse);
-        
-        // When
+
         ProductResponse result = productService.createProduct(createRequest);
-        
-        // Then
+
         assertNotNull(result);
         assertEquals("Test Product", result.getTitle());
         assertEquals(BigDecimal.valueOf(99.99), result.getPrice());
@@ -82,14 +79,11 @@ class ProductServiceTest {
     
     @Test
     void getProductByUuid_WhenProductExists_ShouldReturnProduct() {
-        // Given
         when(productRepository.findByProductUuid(anyString())).thenReturn(Optional.of(testProduct));
         when(productMapper.toResponse(any(Product.class))).thenReturn(productResponse);
-        
-        // When
+
         ProductResponse result = productService.getProductByUuid("test-uuid");
-        
-        // Then
+
         assertNotNull(result);
         assertEquals("test-uuid", result.getProductUuid());
         
@@ -99,10 +93,8 @@ class ProductServiceTest {
     
     @Test
     void getProductByUuid_WhenProductNotExists_ShouldThrowException() {
-        // Given
         when(productRepository.findByProductUuid(anyString())).thenReturn(Optional.empty());
-        
-        // When & Then
+
         assertThrows(ProductNotFoundException.class, () -> {
             productService.getProductByUuid("non-existent-uuid");
         });
